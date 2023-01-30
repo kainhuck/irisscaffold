@@ -1,0 +1,14 @@
+[Unit]
+Description=irisscaffold-greet
+Requires=network.target
+After=multi-user.target
+
+[Service]
+Type=simple
+WorkingDirectory=/tmp
+ExecStart=/bin/greet -c /etc/greet
+Restart=always
+RestartSec=5
+
+[Install]
+WantedBy=multi-user.target
