@@ -4,7 +4,6 @@ import (
 	"errors"
 	"flag"
 	"fmt"
-	"log"
 	"os"
 	"path/filepath"
 
@@ -20,7 +19,7 @@ var (
 type (
 	// LogConfig logger common
 	LogConfig struct {
-		FileName string
+		FilePath string
 		LogLevel string
 	}
 
@@ -61,7 +60,7 @@ func init() {
 	flag.Parse()
 	var err error
 	if Cfg, err = parseConfig(); err != nil {
-		log.Printf("read cfg file error: %s", err)
+		fmt.Printf("read cfg file error: %s\n", err)
 		os.Exit(-1)
 	}
 }

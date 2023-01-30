@@ -6,7 +6,7 @@ import (
 	"github.com/kataras/iris/v12/middleware/cors"
 	"github.com/kataras/iris/v12/middleware/recover"
 	"github.com/kataras/iris/v12/middleware/requestid"
-	"log"
+	"github.com/sirupsen/logrus"
 	"net/http"
 	_ "net/http/pprof"
 	"os"
@@ -47,7 +47,7 @@ func Run(host string, port int, app *iris.Application) {
 	pport, err := strconv.Atoi(pportEnv)
 	if err == nil && port > 0 {
 		go func() {
-			log.Printf("Listen pprof at 0.0.0.0:%d\n", pport)
+			logrus.Infof("Listen pprof at 0.0.0.0:%d\n", pport)
 			_ = http.ListenAndServe(fmt.Sprintf(":%v", pport), nil)
 		}()
 	}
@@ -64,5 +64,5 @@ func Run(host string, port int, app *iris.Application) {
 		Addr: fmt.Sprintf("%s:%d", host, port),
 	}
 
-	log.Fatalf("Run Error: %v", app.Run(iris.Server(srv), iris.WithoutInterruptHandler))
+	logrus.Fatalf("Run Error: %v", app.Run(iris.Server(srv), iris.WithoutInterruptHandler))
 }
