@@ -35,7 +35,7 @@ func Handler(ctx iris.Context) {
 	method := ctx.Request().Method
 	start := time.Now()
 	fields := make(map[string]interface{})
-	fields["title"] = "API_LOG"
+	fields["type"] = "IrisLog"
 	fields["ip"] = ctx.Request().RemoteAddr
 	fields["method"] = method
 	fields["url"] = ctx.Request().URL.String()
