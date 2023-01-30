@@ -43,12 +43,12 @@ func NewApp(level string, init ...InitAppFunc) *iris.Application {
 }
 
 func Run(host string, port int, app *iris.Application) {
-	pport := os.Getenv("PPROF_PORT")
-	port, err := strconv.Atoi(pport)
+	pportEnv := os.Getenv("PPROF_PORT")
+	pport, err := strconv.Atoi(pportEnv)
 	if err == nil && port > 0 {
 		go func() {
-			log.Printf("Listen pprof at 0.0.0.0:%d\n", port)
-			_ = http.ListenAndServe(fmt.Sprintf(":%v", port), nil)
+			log.Printf("Listen pprof at 0.0.0.0:%d\n", pport)
+			_ = http.ListenAndServe(fmt.Sprintf(":%v", pport), nil)
 		}()
 	}
 
