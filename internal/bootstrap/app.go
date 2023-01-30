@@ -3,6 +3,7 @@ package bootstrap
 import (
 	"context"
 	"fmt"
+	"github.com/kainhuck/irisscaffold/internal/logger"
 	"github.com/kataras/iris/v12/middleware/cors"
 	"github.com/kataras/iris/v12/middleware/recover"
 	"github.com/kataras/iris/v12/middleware/requestid"
@@ -34,6 +35,8 @@ func NewApp(level string, init ...InitAppFunc) *iris.Application {
 		defer cancel()
 		_ = app.Shutdown(ctx)
 	})
+
+	app.Use(logger.Handler)
 
 	for _, f := range init {
 		f(app)
