@@ -1,5 +1,5 @@
 [Logger]
-FileName = ""
+FilePath = "logs/greet.log"
 LogLevel = "DEBUG"
 
 [Service]
