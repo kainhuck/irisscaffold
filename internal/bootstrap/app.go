@@ -3,6 +3,7 @@ package bootstrap
 import (
 	"context"
 	"fmt"
+	"github.com/kainhuck/irisscaffold/internal/configx"
 	"github.com/kainhuck/irisscaffold/internal/logger"
 	"github.com/kataras/iris/v12/middleware/cors"
 	"github.com/kataras/iris/v12/middleware/recover"
@@ -19,9 +20,9 @@ import (
 
 type InitAppFunc = func(app *iris.Application)
 
-func NewApp(level string, init ...InitAppFunc) *iris.Application {
+func NewApp(cfg configx.LogConfig, init ...InitAppFunc) *iris.Application {
 	app := iris.New()
-	app.Logger().SetLevel(level)
+	app.Logger().SetLevel(cfg.LogLevel)
 	app.UseRouter(requestid.New())
 	app.UseRouter(recover.New())
 	app.UseRouter(cors.New().
@@ -45,10 +46,10 @@ func NewApp(level string, init ...InitAppFunc) *iris.Application {
 	return app
 }
 
-func Run(host string, port int, app *iris.Application) {
+func Run(cfg configx.ServiceInfo, app *iris.Application) {
 	pportEnv := os.Getenv("PPROF_PORT")
 	pport, err := strconv.Atoi(pportEnv)
-	if err == nil && port > 0 {
+	if err == nil && pport > 0 {
 		go func() {
 			logrus.Infof("Listen pprof at 0.0.0.0:%d\n", pport)
 			_ = http.ListenAndServe(fmt.Sprintf(":%v", pport), nil)
@@ -64,7 +65,7 @@ func Run(host string, port int, app *iris.Application) {
 	})
 
 	srv := &http.Server{
-		Addr: fmt.Sprintf("%s:%d", host, port),
+		Addr: fmt.Sprintf("%s:%d", cfg.Host, cfg.Port),
 	}
 
 	logrus.Fatalf("Run Error: %v", app.Run(iris.Server(srv), iris.WithoutInterruptHandler))

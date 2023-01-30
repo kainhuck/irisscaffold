@@ -3,6 +3,7 @@ package logger
 import (
 	"bytes"
 	"fmt"
+	"github.com/kainhuck/irisscaffold/internal/configx"
 	"github.com/kataras/iris/v12"
 	"github.com/lestrrat-go/file-rotatelogs"
 	"github.com/sirupsen/logrus"
@@ -11,18 +12,18 @@ import (
 	"time"
 )
 
-func Init(level string, filePath string) {
-	if filePath != "" {
+func Init(cfg configx.LogConfig) {
+	if cfg.FilePath != "" {
 		writer, _ := rotatelogs.New(
-			filePath+".%Y%m%d",
-			rotatelogs.WithLinkName(filePath),
+			cfg.FilePath+".%Y%m%d",
+			rotatelogs.WithLinkName(cfg.FilePath),
 			rotatelogs.WithRotationCount(10),
 			rotatelogs.WithRotationTime(time.Hour*24),
 		)
 		logrus.SetOutput(writer)
 	}
 
-	lvl, err := logrus.ParseLevel(level)
+	lvl, err := logrus.ParseLevel(cfg.LogLevel)
 	if err != nil {
 		lvl = logrus.TraceLevel
 	}

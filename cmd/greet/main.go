@@ -8,10 +8,10 @@ import (
 )
 
 func init() {
-	logger.Init(config.Cfg.Logger.LogLevel, config.Cfg.Logger.FilePath)
+	logger.Init(config.Cfg.Logger)
 }
 
 func main() {
-	app := bootstrap.NewApp(config.Cfg.Logger.LogLevel, greet.InitRoutes)
-	bootstrap.Run(config.Cfg.Service.Host, config.Cfg.Service.Port, app)
+	app := bootstrap.NewApp(config.Cfg.Logger, greet.InitRoutes)
+	bootstrap.Run(config.Cfg.Service, app)
 }
