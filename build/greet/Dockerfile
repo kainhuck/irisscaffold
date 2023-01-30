@@ -16,7 +16,7 @@ RUN go mod tidy
 RUN make build_greet
 
 
-FROM alpine3.17
+FROM alpine:3.17
 
 RUN sed -i 's/dl-cdn.alpinelinux.org/mirrors.aliyun.com/g' /etc/apk/repositories && apk add tzdata && \
     cp /usr/share/zoneinfo/Asia/Shanghai /etc/localtime && \
