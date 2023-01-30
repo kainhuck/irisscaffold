@@ -1,6 +1,7 @@
 package configx
 
 import (
+	"flag"
 	"fmt"
 	"github.com/BurntSushi/toml"
 	"os"
@@ -9,7 +10,7 @@ import (
 
 var (
 	configName = "config.toml"
-	FilePath   = "./res"
+	filePath   = "./res"
 )
 
 type (
@@ -32,12 +33,15 @@ type (
 )
 
 func ParseConfig[T any](cfg T) error {
+	// 读取配置文件
+	flag.StringVar(&filePath, "c", filePath, "./sync -c configFile")
+	flag.Parse()
 	var (
 		err      error
 		contents []byte
 	)
-	filePath := filepath.Join(FilePath, configName)
-	absPath, _ := filepath.Abs(filePath)
+
+	absPath, _ := filepath.Abs(filepath.Join(filePath, configName))
 
 	if contents, err = os.ReadFile(absPath); err != nil {
 		return fmt.Errorf("could not load configuration file: %s", err.Error())
