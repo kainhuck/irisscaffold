@@ -1,6 +1,6 @@
 [Logger]
-FileName = ""
-LogLevel = "DEBUG"
+FilePath = "logs/greet.log"
+LogLevel = "INFO"
 
 [Service]
 Host = "0.0.0.0"
