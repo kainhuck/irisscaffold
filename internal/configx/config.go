@@ -26,9 +26,15 @@ type (
 		Port int
 	}
 
+	JwtInfo struct {
+		SigKey     string
+		ExpireTime int // 过期时间单位秒
+	}
+
 	Config struct {
 		Logger  LogConfig
 		Service ServiceInfo
+		Jwt     JwtInfo
 	}
 )
 

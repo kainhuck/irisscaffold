@@ -5,3 +5,7 @@ LogLevel = "DEBUG"
 [Service]
 Host = "0.0.0.0"
 Port = 8080
+
+[Jwt]
+SigKey = "xxxxx"
+ExpireTime = 60
