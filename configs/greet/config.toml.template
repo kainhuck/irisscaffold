@@ -9,3 +9,15 @@ Port = 8080
 [Jwt]
 SigKey = "xxxxx"
 ExpireTime = 60
+
+[Database]
+[Database.Mysql]
+Host = "127.0.0.1"
+Port = 3306
+Username = "root"
+Password = "123456"
+DBName = "db_mp"
+
+[Custom]
+Name = "kainhuck"
+Age = 18

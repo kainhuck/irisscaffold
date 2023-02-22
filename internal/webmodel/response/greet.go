@@ -8,7 +8,7 @@ type LoginResp struct {
 	Token string `json:"token"`
 }
 
-type AuthResp struct {
+type JwtDemoResp struct {
 	Username string `json:"username"`
 	Password string `json:"password"`
 }

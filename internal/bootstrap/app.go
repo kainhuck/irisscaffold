@@ -20,9 +20,9 @@ import (
 
 type InitAppFunc = func(app *iris.Application)
 
-func NewApp(cfg configx.LogConfig, init ...InitAppFunc) *iris.Application {
+func NewApp(logLevel string) *iris.Application {
 	app := iris.New()
-	app.Logger().SetLevel(cfg.LogLevel)
+	app.Logger().SetLevel(logLevel)
 	app.UseRouter(requestid.New())
 	app.UseRouter(recover.New())
 	app.UseRouter(cors.New().
@@ -38,10 +38,6 @@ func NewApp(cfg configx.LogConfig, init ...InitAppFunc) *iris.Application {
 	})
 
 	app.Use(logger.Handler)
-
-	for _, f := range init {
-		f(app)
-	}
 
 	return app
 }

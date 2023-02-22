@@ -6,15 +6,25 @@ import (
 	"os"
 )
 
-var Cfg = new(Config)
+type (
+	CustomConfig struct {
+		Name string
+		Age  int
+	}
 
-type Config struct {
-	configx.Config
-}
+	Config struct {
+		configx.Config
+		Custom CustomConfig
+	}
+)
 
-func init() {
-	if err := configx.ParseConfig(Cfg); err != nil {
-		fmt.Printf("read cfg file error: %s\n", err)
+func NewConfig() *Config {
+	var cfg Config
+
+	if err := configx.ParseConfig(&cfg); err != nil {
+		fmt.Printf("read cfg file error: %v\n", err)
 		os.Exit(-1)
 	}
+
+	return &cfg
 }

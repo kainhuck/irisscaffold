@@ -1,0 +1,110 @@
+basePath: /api/v1
+definitions:
+  request.LoginReq:
+    properties:
+      password:
+        type: string
+      username:
+        type: string
+    required:
+    - password
+    - username
+    type: object
+  response.GreetResp:
+    properties:
+      name:
+        type: string
+    type: object
+  response.JwtDemoResp:
+    properties:
+      password:
+        type: string
+      username:
+        type: string
+    type: object
+  response.LoginResp:
+    properties:
+      token:
+        type: string
+    type: object
+host: localhost:8080
+info:
+  contact: {}
+  description: iris scaffold for everyone
+  title: irisscaffold API
+  version: "1.0"
+paths:
+  /hello:
+    get:
+      description: this is Greet
+      parameters:
+      - in: query
+        name: name
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.GreetResp'
+      summary: Greet
+      tags:
+      - iris
+  /jwt/demo:
+    get:
+      description: this is JwtDemo
+      parameters:
+      - description: Bearer token
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.JwtDemoResp'
+      summary: JwtDemo
+      tags:
+      - iris
+  /login:
+    post:
+      consumes:
+      - application/json
+      description: this is login
+      parameters:
+      - description: args
+        in: body
+        name: object
+        required: true
+        schema:
+          $ref: '#/definitions/request.LoginReq'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/response.LoginResp'
+      summary: Login
+      tags:
+      - iris
+  /logout:
+    post:
+      description: this is Logout
+      parameters:
+      - description: Bearer token
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses: {}
+      summary: Logout
+      tags:
+      - iris
+swagger: "2.0"
