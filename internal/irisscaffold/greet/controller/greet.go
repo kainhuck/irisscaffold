@@ -43,6 +43,22 @@ func (ctr *Controller) LoginHandler(ctx *context.Context) {
 	ctx.SendResponse(ctr.app.Login(req))
 }
 
+// WebsocketHandler
+// @Summary websocket
+// @Description this is websocket
+// @Tags iris
+// @Param Authorization header string true "Bearer token"
+// @Router /ws [get]
+func (ctr *Controller) WebsocketHandler(ctx *context.Context) {
+	conn, err := ctr.upGrader.Upgrade(ctx.ResponseWriter(), ctx.Request(), nil)
+	if err != nil {
+		ctx.SendNoBodyResponse(e.ErrUpGrade, err)
+		return
+	}
+
+	ctr.app.Websocket(conn)
+}
+
 // JwtDemoHandler
 // @Summary JwtDemo
 // @Description this is JwtDemo

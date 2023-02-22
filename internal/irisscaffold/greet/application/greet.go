@@ -1,6 +1,7 @@
 package application
 
 import (
+	"github.com/gorilla/websocket"
 	"github.com/kainhuck/irisscaffold/internal/context"
 	"github.com/kainhuck/irisscaffold/internal/e"
 	"github.com/kainhuck/irisscaffold/internal/middleware"
@@ -38,6 +39,28 @@ func (app *Application) Login(req request.LoginReq) (code int, data interface{},
 	}
 
 	return e.Success, response.LoginResp{Token: string(token)}, nil
+}
+
+func (app *Application) Websocket(conn *websocket.Conn) {
+	logrus.Debugf("[%v] join", conn.RemoteAddr().String())
+	for {
+		_, message, err := conn.ReadMessage()
+		if err != nil {
+			switch err.(type) {
+			case *websocket.CloseError:
+				logrus.Debugf("[%v] leave", conn.RemoteAddr().String())
+				return
+			default:
+				logrus.WithError(err).Errorf("[%v] disconnect", conn.RemoteAddr().String())
+				return
+			}
+		}
+
+		if err := conn.WriteMessage(websocket.TextMessage, []byte("hello: "+string(message))); err != nil {
+			logrus.WithError(err).Error("write failed: %v", err)
+			return
+		}
+	}
 }
 
 func (app *Application) JwtDemo(ctx *context.Context) (code int, data interface{}, err error) {

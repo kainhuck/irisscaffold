@@ -11,4 +11,5 @@ const (
 const (
 	ErrLoginFailed = 10000 + iota
 	ErrLogoutFailed
+	ErrUpGrade
 )
