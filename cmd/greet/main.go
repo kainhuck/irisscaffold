@@ -7,11 +7,14 @@ import (
 	"github.com/kainhuck/irisscaffold/internal/logger"
 )
 
-func init() {
-	logger.Init(config.Cfg.Logger)
-}
-
 func main() {
-	app := bootstrap.NewApp(config.Cfg.Logger, greet.InitRoutes)
-	bootstrap.Run(config.Cfg.Service, app)
+	cfg := config.NewConfig()
+
+	logger.Init(cfg.Logger)
+
+	app := bootstrap.NewApp(cfg.Logger.LogLevel)
+
+	greet.InitRoutes(app, cfg)
+
+	bootstrap.Run(cfg.Service, app)
 }

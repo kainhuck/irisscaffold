@@ -9,13 +9,17 @@ import (
 	"net/http"
 )
 
-func InitRoutes(app *iris.Application) {
+func InitRoutes(app *iris.Application, cfg *config.Config) {
 	v1Route := app.Party("/api/v1")
 
-	v1Route.Handle(http.MethodGet, "/hello", context.Handler(controller.GreetHandler))
-	v1Route.Handle(http.MethodPost, "/login", context.Handler(controller.LoginHandler))
+	ctr := controller.NewController(cfg)
 
-	v1Route.Use(middleware.JwtVerify(config.Cfg.Jwt.SigKey))
-	v1Route.Handle(http.MethodGet, "/auth", context.Handler(controller.AuthHandler))
-	v1Route.Handle(http.MethodPost, "/logout", context.Handler(controller.LogoutHandler))
+	v1Route.Handle(http.MethodGet, "/hello", context.Handler(ctr.GreetHandler))
+	v1Route.Handle(http.MethodPost, "/login", context.Handler(ctr.LoginHandler))
+
+	v1Route.Use(middleware.JwtVerify(cfg.Jwt.SigKey))
+	{
+		v1Route.Handle(http.MethodGet, "/auth", context.Handler(ctr.AuthHandler))
+		v1Route.Handle(http.MethodPost, "/logout", context.Handler(ctr.LogoutHandler))
+	}
 }
