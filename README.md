@@ -2,9 +2,34 @@
 
 iris开发模板
 
-## V1 Version
+## feature
+1. 符合[golang-standards/project-layout](https://github.com/golang-standards/project-layout)标准
+2. 包含jwt
+3. 包含数据库(gorm:mysql)
+4. 包含swagger
+5. 配置文件使用toml
 
-不包含数据库的轻度封装
+## swagger 
+
+命令安装
+
+```bash
+go install github.com/swaggo/swag/cmd/swag@latest
+```
+
+文档生成
+
+```bash
+make swag_greet
+```
+
+文档查看
+
+```bash
+make run_greet
+```
+
+访问: http://127.0.0.1:8080/swagger/index.html
 
 ## 命名规范(参考go-zero规范)
 
