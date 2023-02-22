@@ -4,6 +4,8 @@ go 1.19
 
 require (
 	github.com/BurntSushi/toml v1.2.1
+	github.com/gorilla/websocket v1.5.0
+	github.com/iris-contrib/swagger/v12 v12.2.0-alpha
 	github.com/kataras/iris/v12 v12.2.0-beta7.0.20230125035042-fc4214e9ae4a
 	github.com/lestrrat-go/file-rotatelogs v2.4.0+incompatible
 	github.com/sirupsen/logrus v1.9.0
@@ -34,7 +36,6 @@ require (
 	github.com/google/uuid v1.3.0 // indirect
 	github.com/gorilla/css v1.0.0 // indirect
 	github.com/iris-contrib/schema v0.0.6 // indirect
-	github.com/iris-contrib/swagger/v12 v12.2.0-alpha // indirect
 	github.com/jinzhu/inflection v1.0.0 // indirect
 	github.com/jinzhu/now v1.1.5 // indirect
 	github.com/jonboulle/clockwork v0.3.0 // indirect

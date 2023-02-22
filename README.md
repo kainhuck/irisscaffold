@@ -8,6 +8,7 @@ iris开发模板
 3. 包含数据库(gorm:mysql)
 4. 包含swagger
 5. 配置文件使用toml
+6. 包含websocket接口
 
 ## swagger 
 
