@@ -16,6 +16,16 @@ func (app *Application) Greet(req request.GreetReq) (code int, data interface{},
 }
 
 func (app *Application) Login(req request.LoginReq) (code int, data interface{}, err error) {
+	user, err := app.dbClient.GetUserByName(req.Username)
+	if err != nil {
+		logrus.Errorf("login failed: %v", err)
+		return e.ErrLoginFailed, nil, err
+	}
+
+	if user.Password != req.Password {
+		return e.ErrLoginFailed, nil, nil
+	}
+
 	signer := jwt.NewSigner(jwt.HS256, app.cfg.Jwt.SigKey, time.Duration(app.cfg.Jwt.ExpireTime)*time.Second)
 	// 自行修改
 	token, err := signer.Sign(middleware.Claims{
@@ -30,7 +40,7 @@ func (app *Application) Login(req request.LoginReq) (code int, data interface{},
 	return e.Success, response.LoginResp{Token: string(token)}, nil
 }
 
-func (app *Application) Auth(ctx *context.Context) (code int, data interface{}, err error) {
+func (app *Application) JwtDemo(ctx *context.Context) (code int, data interface{}, err error) {
 	claims := jwt.Get(ctx.Context).(*middleware.Claims)
 
 	return e.Success, response.AuthResp{

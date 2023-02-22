@@ -26,8 +26,8 @@ func (ctr *Controller) LoginHandler(ctx *context.Context) {
 	ctx.SendResponse(ctr.app.Login(req))
 }
 
-func (ctr *Controller) AuthHandler(ctx *context.Context) {
-	ctx.SendResponse(ctr.app.Auth(ctx))
+func (ctr *Controller) JwtDemoHandler(ctx *context.Context) {
+	ctx.SendResponse(ctr.app.JwtDemo(ctx))
 }
 
 func (ctr *Controller) LogoutHandler(ctx *context.Context) {

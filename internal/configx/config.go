@@ -31,12 +31,29 @@ type (
 		ExpireTime int // 过期时间单位秒
 	}
 
+	Mysql struct {
+		Host     string
+		Port     int
+		Username string
+		Password string
+		DBName   string
+	}
+
+	Database struct {
+		Mysql Mysql
+	}
+
 	Config struct {
-		Logger  LogConfig
-		Service ServiceInfo
-		Jwt     JwtInfo
+		Logger   LogConfig
+		Service  ServiceInfo
+		Jwt      JwtInfo
+		Database Database
 	}
 )
+
+func (m Mysql) Dsn() string {
+	return fmt.Sprintf("%s:%s@tcp(%s:%d)/%s?charset=utf8mb4&parseTime=True&loc=Local", m.Username, m.Password, m.Host, m.Port, m.DBName)
+}
 
 func ParseConfig[T any](cfg T) error {
 	// 读取配置文件

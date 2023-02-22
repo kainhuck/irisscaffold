@@ -19,7 +19,7 @@ func InitRoutes(app *iris.Application, cfg *config.Config) {
 
 	v1Route.Use(middleware.JwtVerify(cfg.Jwt.SigKey))
 	{
-		v1Route.Handle(http.MethodGet, "/auth", context.Handler(ctr.AuthHandler))
+		v1Route.Handle(http.MethodGet, "/jwt/demo", context.Handler(ctr.JwtDemoHandler))
 		v1Route.Handle(http.MethodPost, "/logout", context.Handler(ctr.LogoutHandler))
 	}
 }
