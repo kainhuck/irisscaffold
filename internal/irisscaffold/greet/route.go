@@ -9,13 +9,21 @@ import (
 	"net/http"
 )
 
+// @title irisscaffold API
+// @version 1.0
+// @description iris scaffold for everyone
+// @host localhost:8080
+// @BasePath /api/v1
+
 func InitRoutes(app *iris.Application, cfg *config.Config) {
 	v1Route := app.Party("/api/v1")
 
 	ctr := controller.NewController(cfg)
 
-	v1Route.Handle(http.MethodGet, "/hello", context.Handler(ctr.GreetHandler))
-	v1Route.Handle(http.MethodPost, "/login", context.Handler(ctr.LoginHandler))
+	{
+		v1Route.Handle(http.MethodGet, "/hello", context.Handler(ctr.GreetHandler))
+		v1Route.Handle(http.MethodPost, "/login", context.Handler(ctr.LoginHandler))
+	}
 
 	v1Route.Use(middleware.JwtVerify(cfg.Jwt.SigKey))
 	{

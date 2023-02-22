@@ -14,7 +14,7 @@ type (
 
 	Config struct {
 		configx.Config
-		CustomConfig CustomConfig
+		Custom CustomConfig
 	}
 )
 

@@ -43,7 +43,7 @@ func (app *Application) Login(req request.LoginReq) (code int, data interface{},
 func (app *Application) JwtDemo(ctx *context.Context) (code int, data interface{}, err error) {
 	claims := jwt.Get(ctx.Context).(*middleware.Claims)
 
-	return e.Success, response.AuthResp{
+	return e.Success, response.JwtDemoResp{
 		Username: claims.Username,
 		Password: claims.Password,
 	}, nil
