@@ -60,9 +60,11 @@ func Run(cfg configx.ServiceInfo, app *iris.Application) {
 		_ = app.Shutdown(ctx)
 	})
 
-	srv := &http.Server{
-		Addr: fmt.Sprintf("%s:%d", cfg.Host, cfg.Port),
+	if cfg.Schema == "http" {
+		logrus.Fatalf("Run Error: %v", app.Run(iris.Addr(fmt.Sprintf("%s:%d", cfg.Host, cfg.Port)), iris.WithoutInterruptHandler))
+	} else if cfg.Schema == "https" {
+		logrus.Fatalf("Run Error: %v", app.Run(iris.TLS(fmt.Sprintf("%s:%d", cfg.Host, cfg.Port), cfg.CertFile, cfg.KeyFile), iris.WithoutInterruptHandler))
+	} else {
+		logrus.Fatalf("Unkonwn schema: %s", cfg.Schema)
 	}
-
-	logrus.Fatalf("Run Error: %v", app.Run(iris.Server(srv), iris.WithoutInterruptHandler))
 }

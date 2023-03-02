@@ -22,8 +22,12 @@ type (
 
 	// ServiceInfo 服务地址端口
 	ServiceInfo struct {
-		Host string
-		Port int
+		Host     string
+		Port     int
+		Domain   string
+		Schema   string // http https
+		CertFile string
+		KeyFile  string
 	}
 
 	JwtInfo struct {
@@ -74,4 +78,12 @@ func ParseConfig[T any](cfg T) error {
 	}
 
 	return nil
+}
+
+func (s ServiceInfo) BaseURL() string {
+	if (s.Schema == "http" && s.Port == 80) || (s.Schema == "https" && s.Port == 443) {
+		return fmt.Sprintf("%s://%s", s.Schema, s.Domain)
+	}
+
+	return fmt.Sprintf("%s://%s:%d", s.Schema, s.Domain, s.Port)
 }

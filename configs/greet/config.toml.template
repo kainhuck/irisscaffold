@@ -5,6 +5,10 @@ LogLevel = "INFO"
 [Service]
 Host = "0.0.0.0"
 Port = 8080
+Domain = "localhost"
+Schema = "http"
+CertFile = "xxxxx"
+KeyFile = "xxxxx"
 
 [Jwt]
 SigKey = "xxxxx"
