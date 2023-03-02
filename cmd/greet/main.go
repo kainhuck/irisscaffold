@@ -21,7 +21,7 @@ func main() {
 	greet.InitRoutes(app, cfg)
 
 	swagCfg := &swagger.Config{
-		URL:         fmt.Sprintf("http://localhost:%d/swagger/doc.json", cfg.Service.Port),
+		URL:         fmt.Sprintf("%s/swagger/doc.json", cfg.Service.BaseURL()),
 		DeepLinking: true,
 	}
 
