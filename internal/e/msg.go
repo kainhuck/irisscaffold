@@ -8,6 +8,7 @@ var MsgFlag = map[int]string{
 	ErrInternal:     "服务器内部错误",
 	ErrLoginFailed:  "登录失败",
 	ErrLogoutFailed: "登出失败",
+	ErrUpGrade:      "协议升级失败",
 }
 
 func GetMsg(code int) string {
