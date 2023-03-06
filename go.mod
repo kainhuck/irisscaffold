@@ -8,6 +8,8 @@ require (
 	github.com/iris-contrib/swagger/v12 v12.2.0-alpha
 	github.com/kataras/iris/v12 v12.2.0-beta7.0.20230125035042-fc4214e9ae4a
 	github.com/lestrrat-go/file-rotatelogs v2.4.0+incompatible
+	github.com/pkg/errors v0.9.1
+	github.com/redis/go-redis/v9 v9.0.2
 	github.com/sirupsen/logrus v1.9.0
 	github.com/swaggo/swag v1.8.10
 	gorm.io/driver/mysql v1.4.7
@@ -53,8 +55,6 @@ require (
 	github.com/mailgun/raymond/v2 v2.0.48 // indirect
 	github.com/mailru/easyjson v0.7.7 // indirect
 	github.com/microcosm-cc/bluemonday v1.0.21 // indirect
-	github.com/pkg/errors v0.9.1 // indirect
-	github.com/redis/go-redis/v9 v9.0.2 // indirect
 	github.com/russross/blackfriday/v2 v2.1.0 // indirect
 	github.com/schollz/closestmatch v2.1.0+incompatible // indirect
 	github.com/tdewolff/minify/v2 v2.12.4 // indirect

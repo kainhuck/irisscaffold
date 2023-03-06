@@ -1,7 +1,7 @@
 package middleware
 
 import (
-	"github.com/kainhuck/irisscaffold/internal/e"
+	"github.com/kainhuck/irisscaffold/internal/errno"
 	"github.com/kainhuck/irisscaffold/internal/webmodel/response"
 	"github.com/kataras/iris/v12/context"
 	"github.com/kataras/iris/v12/middleware/jwt"
@@ -27,8 +27,8 @@ func JwtVerify(sigKey string) context.Handler {
 		ctx.StopExecution()
 		ctx.StatusCode(http.StatusOK)
 		_ = ctx.JSON(response.ApiResponse{
-			Code:      e.ErrUnauthorized,
-			Message:   e.GetMsg(e.ErrUnauthorized),
+			Code:      errno.ErrParameter.GetBusinessCode(),
+			Message:   errno.ErrParameter.GetMsg(),
 			Error:     "",
 			Data:      nil,
 			RequestID: ctx.GetID().(string),

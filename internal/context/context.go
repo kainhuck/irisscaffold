@@ -1,10 +1,9 @@
 package context
 
 import (
-	"github.com/kainhuck/irisscaffold/internal/e"
+	"github.com/kainhuck/irisscaffold/internal/errno"
 	"github.com/kainhuck/irisscaffold/internal/webmodel/response"
 	"github.com/kataras/iris/v12"
-	"net/http"
 	"sync"
 )
 
@@ -26,35 +25,56 @@ func release(ctx *Context) {
 	contextPool.Put(ctx)
 }
 
-func (c *Context) SendResponse(code int, data interface{}, err error) {
-	c.StatusCode(http.StatusOK)
+type HandlerFunc func(ctx *Context) (interface{}, error)
 
-	errStr := ""
-	if err != nil {
-		errStr = err.Error()
-	}
-
-	resp := &response.ApiResponse{
-		Code:      code,
-		Message:   e.GetMsg(code),
-		Error:     errStr,
-		Data:      data,
-		RequestID: c.GetID().(string),
-	}
-
-	_ = c.JSON(resp)
-}
-
-func (c *Context) SendNoBodyResponse(code int, err error) {
-	c.SendResponse(code, nil, err)
-}
-
-func Handler(h func(*Context)) iris.Handler {
+func Handler(f HandlerFunc) iris.Handler {
 	return func(original iris.Context) {
 		ctx := acquire(original)
 		if !ctx.IsStopped() { // 请求被终止
-			h(ctx)
+			handler(ctx, f)
 		}
 		release(ctx)
 	}
+}
+
+func handler(ctx *Context, f HandlerFunc) {
+	data, err := f(ctx)
+
+	if ctx.IsStopped() {
+		return
+	}
+
+	if err != nil {
+		makeResp(ctx, err)
+	} else {
+		makeResp(ctx, data)
+	}
+}
+
+func makeResp(ctx *Context, data interface{}) {
+	rsp := &response.ApiResponse{
+		RequestID: ctx.GetID().(string),
+	}
+
+	switch d := data.(type) {
+	case errno.Error:
+		rsp.Code = d.GetBusinessCode()
+		rsp.Message = d.GetMsg()
+		if err := d.GetErr(); err != nil {
+			rsp.Error = err.Error()
+		}
+		ctx.StatusCode(d.GetHttpCode())
+	case error:
+		en := errno.ErrInternal.WithErr(d)
+		rsp.Code = en.GetBusinessCode()
+		rsp.Message = en.GetMsg()
+		rsp.Error = d.Error()
+		ctx.StatusCode(en.GetHttpCode())
+	default:
+		rsp.Code = errno.OK.GetBusinessCode()
+		rsp.Message = errno.OK.GetMsg()
+		rsp.Data = data
+	}
+
+	_ = ctx.JSON(rsp)
 }
