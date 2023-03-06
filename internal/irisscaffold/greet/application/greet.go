@@ -12,6 +12,7 @@ import (
 )
 
 func (app *Application) Greet(req request.GreetReq) (code int, data interface{}, err error) {
+	app.log.Infof("Greet: %v", "test")
 	return e.Success, response.GreetResp{Name: req.Name}, nil
 }
 

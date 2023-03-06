@@ -1,6 +1,7 @@
 package bootstrap
 
 import (
+	"bytes"
 	"context"
 	"fmt"
 	"github.com/kainhuck/irisscaffold/internal/configx"
@@ -40,11 +41,15 @@ func NewApp(log logger.Logger) *iris.Application {
 
 	app.Use(func(ctx *irisCtx.Context) {
 		start := time.Now()
-		body, _ := io.ReadAll(ctx.Request().Body)
+		body, err := io.ReadAll(ctx.Request().Body)
+		if err == nil {
+			defer ctx.Request().Body.Close()
+			ctx.Request().Body = io.NopCloser(bytes.NewBuffer(body))
+		}
 
 		ctx.Next()
 
-		log.Infof("[IRIS_LOG] request_id: (%v), remote_addr: (%v), [%v] url: %v, body: %s, time_cost: %dms",
+		log.Infof("[IRIS_LOG] request_id: (%v), remote_addr: (%v), [%v] %v, body: (%s), time_cost: %dms",
 			ctx.GetID(), ctx.Request().RemoteAddr, ctx.Request().Method, ctx.Request().URL.String(), body, time.Since(start).Nanoseconds()/1e6)
 	})
 
