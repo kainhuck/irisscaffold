@@ -9,8 +9,6 @@ import (
 )
 
 type Client interface {
-	// AutoMigrate 数据迁移
-	AutoMigrate() error
 	// GetUserByName 查找用户
 	GetUserByName(name string) (*model.User, error)
 	// CreateUser 创建用户
