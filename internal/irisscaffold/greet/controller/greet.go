@@ -2,7 +2,7 @@ package controller
 
 import (
 	"github.com/kainhuck/irisscaffold/internal/context"
-	"github.com/kainhuck/irisscaffold/internal/e"
+	"github.com/kainhuck/irisscaffold/internal/errno"
 	"github.com/kainhuck/irisscaffold/internal/webmodel/request"
 )
 
@@ -14,14 +14,13 @@ import (
 // @Param object query request.GreetReq true "args"
 // @Success 200 {object} response.GreetResp
 // @Router /hello [get]
-func (ctr *Controller) GreetHandler(ctx *context.Context) {
+func (ctr *Controller) GreetHandler(ctx *context.Context) (interface{}, error) {
 	var req request.GreetReq
 	if err := ctx.ReadQuery(&req); err != nil {
-		ctx.SendNoBodyResponse(e.ErrParameter, err)
-		return
+		return nil, errno.ErrParameter.WithErr(err)
 	}
 
-	ctx.SendResponse(ctr.app.Greet(req))
+	return ctr.app.Greet(req)
 }
 
 // LoginHandler
@@ -33,14 +32,13 @@ func (ctr *Controller) GreetHandler(ctx *context.Context) {
 // @Param object body request.LoginReq true "args"
 // @Success 200 {object} response.LoginResp
 // @Router /login [post]
-func (ctr *Controller) LoginHandler(ctx *context.Context) {
+func (ctr *Controller) LoginHandler(ctx *context.Context) (interface{}, error) {
 	var req request.LoginReq
 	if err := ctx.ReadJSON(&req); err != nil {
-		ctx.SendNoBodyResponse(e.ErrParameter, err)
-		return
+		return nil, errno.ErrParameter.WithErr(err)
 	}
 
-	ctx.SendResponse(ctr.app.Login(req))
+	return ctr.app.Login(req)
 }
 
 // WebsocketHandler
@@ -49,14 +47,17 @@ func (ctr *Controller) LoginHandler(ctx *context.Context) {
 // @Tags iris
 // @Param Authorization header string true "Bearer token"
 // @Router /ws [get]
-func (ctr *Controller) WebsocketHandler(ctx *context.Context) {
+func (ctr *Controller) WebsocketHandler(ctx *context.Context) (interface{}, error) {
 	conn, err := ctr.upGrader.Upgrade(ctx.ResponseWriter(), ctx.Request(), nil)
 	if err != nil {
-		ctx.SendNoBodyResponse(e.ErrUpGrade, err)
-		return
+		return nil, errno.ErrUpGrade.WithErr(err)
 	}
 
 	ctr.app.Websocket(conn)
+
+	ctx.StopExecution()
+
+	return nil, nil
 }
 
 // JwtDemoHandler
@@ -67,8 +68,8 @@ func (ctr *Controller) WebsocketHandler(ctx *context.Context) {
 // @Param Authorization header string true "Bearer token"
 // @Success 200 {object} response.JwtDemoResp
 // @Router /jwt/demo [get]
-func (ctr *Controller) JwtDemoHandler(ctx *context.Context) {
-	ctx.SendResponse(ctr.app.JwtDemo(ctx))
+func (ctr *Controller) JwtDemoHandler(ctx *context.Context) (interface{}, error) {
+	return ctr.app.JwtDemo(ctx)
 }
 
 // LogoutHandler
@@ -78,6 +79,6 @@ func (ctr *Controller) JwtDemoHandler(ctx *context.Context) {
 // @Produce application/json
 // @Param Authorization header string true "Bearer token"
 // @Router /logout [post]
-func (ctr *Controller) LogoutHandler(ctx *context.Context) {
-	ctx.SendNoBodyResponse(ctr.app.Logout(ctx))
+func (ctr *Controller) LogoutHandler(ctx *context.Context) (interface{}, error) {
+	return nil, ctr.app.Logout(ctx)
 }

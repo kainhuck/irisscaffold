@@ -3,7 +3,7 @@ package application
 import (
 	"github.com/gorilla/websocket"
 	"github.com/kainhuck/irisscaffold/internal/context"
-	"github.com/kainhuck/irisscaffold/internal/e"
+	"github.com/kainhuck/irisscaffold/internal/errno"
 	"github.com/kainhuck/irisscaffold/internal/middleware"
 	"github.com/kainhuck/irisscaffold/internal/webmodel/request"
 	"github.com/kainhuck/irisscaffold/internal/webmodel/response"
@@ -11,20 +11,20 @@ import (
 	"time"
 )
 
-func (app *Application) Greet(req request.GreetReq) (code int, data interface{}, err error) {
+func (app *Application) Greet(req request.GreetReq) (interface{}, error) {
 	app.log.Infof("Greet: %v", "test")
-	return e.Success, response.GreetResp{Name: req.Name}, nil
+	return &response.GreetResp{Name: req.Name}, nil
 }
 
-func (app *Application) Login(req request.LoginReq) (code int, data interface{}, err error) {
+func (app *Application) Login(req request.LoginReq) (interface{}, error) {
 	user, err := app.dbClient.GetUserByName(req.Username)
 	if err != nil {
 		app.log.Errorf("login failed: %v", err)
-		return e.ErrLoginFailed, nil, err
+		return nil, errno.ErrLoginFailed.WithErr(err)
 	}
 
 	if user.Password != req.Password {
-		return e.ErrLoginFailed, nil, nil
+		return nil, errno.ErrLoginFailed.WithDetail("密码不正确")
 	}
 
 	signer := jwt.NewSigner(jwt.HS256, app.cfg.Jwt.SigKey, time.Duration(app.cfg.Jwt.ExpireTime)*time.Second)
@@ -35,10 +35,10 @@ func (app *Application) Login(req request.LoginReq) (code int, data interface{},
 	})
 	if err != nil {
 		app.log.Errorf("login failed: %v", err)
-		return e.ErrLoginFailed, nil, err
+		return nil, errno.ErrLoginFailed.WithErr(err)
 	}
 
-	return e.Success, response.LoginResp{Token: string(token)}, nil
+	return &response.LoginResp{Token: string(token)}, nil
 }
 
 func (app *Application) Websocket(conn *websocket.Conn) {
@@ -63,20 +63,20 @@ func (app *Application) Websocket(conn *websocket.Conn) {
 	}
 }
 
-func (app *Application) JwtDemo(ctx *context.Context) (code int, data interface{}, err error) {
+func (app *Application) JwtDemo(ctx *context.Context) (interface{}, error) {
 	claims := jwt.Get(ctx.Context).(*middleware.Claims)
 
-	return e.Success, response.JwtDemoResp{
+	return &response.JwtDemoResp{
 		Username: claims.Username,
 		Password: claims.Password,
 	}, nil
 }
 
-func (app *Application) Logout(ctx *context.Context) (code int, err error) {
-	if err = ctx.Logout(); err != nil {
+func (app *Application) Logout(ctx *context.Context) error {
+	if err := ctx.Logout(); err != nil {
 		app.log.Errorf("logout failed: %v", err)
-		return e.ErrLogoutFailed, err
+		return errno.ErrLogoutFailed.WithErr(err)
 	}
 
-	return e.Success, nil
+	return nil
 }
