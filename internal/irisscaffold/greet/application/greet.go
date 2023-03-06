@@ -8,7 +8,6 @@ import (
 	"github.com/kainhuck/irisscaffold/internal/webmodel/request"
 	"github.com/kainhuck/irisscaffold/internal/webmodel/response"
 	"github.com/kataras/iris/v12/middleware/jwt"
-	"github.com/sirupsen/logrus"
 	"time"
 )
 
@@ -19,7 +18,7 @@ func (app *Application) Greet(req request.GreetReq) (code int, data interface{},
 func (app *Application) Login(req request.LoginReq) (code int, data interface{}, err error) {
 	user, err := app.dbClient.GetUserByName(req.Username)
 	if err != nil {
-		logrus.Errorf("login failed: %v", err)
+		app.log.Errorf("login failed: %v", err)
 		return e.ErrLoginFailed, nil, err
 	}
 
@@ -34,7 +33,7 @@ func (app *Application) Login(req request.LoginReq) (code int, data interface{},
 		Password: req.Password,
 	})
 	if err != nil {
-		logrus.Errorf("login failed: %v", err)
+		app.log.Errorf("login failed: %v", err)
 		return e.ErrLoginFailed, nil, err
 	}
 
@@ -42,22 +41,22 @@ func (app *Application) Login(req request.LoginReq) (code int, data interface{},
 }
 
 func (app *Application) Websocket(conn *websocket.Conn) {
-	logrus.Debugf("[%v] join", conn.RemoteAddr().String())
+	app.log.Debugf("[%v] join", conn.RemoteAddr().String())
 	for {
 		_, message, err := conn.ReadMessage()
 		if err != nil {
 			switch err.(type) {
 			case *websocket.CloseError:
-				logrus.Debugf("[%v] leave", conn.RemoteAddr().String())
+				app.log.Debugf("[%v] leave", conn.RemoteAddr().String())
 				return
 			default:
-				logrus.WithError(err).Errorf("[%v] disconnect", conn.RemoteAddr().String())
+				app.log.Errorf("[%v] disconnect, error: %v", conn.RemoteAddr().String(), err)
 				return
 			}
 		}
 
 		if err := conn.WriteMessage(websocket.TextMessage, []byte("hello: "+string(message))); err != nil {
-			logrus.WithError(err).Error("write failed: %v", err)
+			app.log.Errorf("write failed: %v", err)
 			return
 		}
 	}
@@ -74,7 +73,7 @@ func (app *Application) JwtDemo(ctx *context.Context) (code int, data interface{
 
 func (app *Application) Logout(ctx *context.Context) (code int, err error) {
 	if err = ctx.Logout(); err != nil {
-		logrus.Errorf("logout failed: %v", err)
+		app.log.Errorf("logout failed: %v", err)
 		return e.ErrLogoutFailed, err
 	}
 

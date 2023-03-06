@@ -16,8 +16,8 @@ var (
 type (
 	// LogConfig logger common
 	LogConfig struct {
-		FilePath string
-		LogLevel string
+		FilePath string // 精确到文件名
+		LogLevel string // DEBUG INFO WARN ERROR
 	}
 
 	// ServiceInfo 服务地址端口
