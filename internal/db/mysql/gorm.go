@@ -1,7 +1,6 @@
 package mysql
 
 import (
-	"github.com/kainhuck/irisscaffold/internal/db"
 	"github.com/kainhuck/irisscaffold/internal/model"
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
@@ -13,7 +12,7 @@ type Client struct {
 	pool *gorm.DB
 }
 
-func NewClient(dsn string) (db.Client, error) {
+func NewClient(dsn string) (*Client, error) {
 	pool, err := gorm.Open(mysql.Open(dsn), &gorm.Config{
 		NamingStrategy: schema.NamingStrategy{
 			TablePrefix:   "tb_",
