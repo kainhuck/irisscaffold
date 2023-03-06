@@ -14,11 +14,11 @@ import (
 func main() {
 	cfg := config.NewConfig()
 
-	logger.Init(cfg.Logger)
+	log := logger.NewLogger(cfg.Logger)
 
-	app := bootstrap.NewApp(cfg.Logger.LogLevel)
+	app := bootstrap.NewApp(log)
 
-	greet.InitRoutes(app, cfg)
+	greet.InitRoutes(log, app, cfg)
 
 	swagCfg := &swagger.Config{
 		URL:         fmt.Sprintf("%s/swagger/doc.json", cfg.Service.BaseURL()),
@@ -27,5 +27,5 @@ func main() {
 
 	app.Get("/swagger/{any:path}", swagger.CustomWrapHandler(swagCfg, swaggerFiles.Handler))
 
-	bootstrap.Run(cfg.Service, app)
+	bootstrap.Run(log, cfg.Service, app)
 }
