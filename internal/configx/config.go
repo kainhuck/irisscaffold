@@ -43,8 +43,16 @@ type (
 		DBName   string
 	}
 
+	Redis struct {
+		Host     string
+		Port     int
+		Password string
+		DB       int
+	}
+
 	Database struct {
 		Mysql Mysql
+		Redis Redis
 	}
 
 	Config struct {

@@ -21,6 +21,11 @@ Port = 3306
 Username = "root"
 Password = "123456"
 DBName = "db_mp"
+[Database.Redis]
+Host = "127.0.0.1"
+Port = 6379
+Password = ""
+DB = 0
 
 [Custom]
 Name = "kainhuck"

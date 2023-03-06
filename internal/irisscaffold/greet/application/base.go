@@ -2,6 +2,8 @@ package application
 
 import (
 	"fmt"
+	"github.com/kainhuck/irisscaffold/internal/cache"
+	"github.com/kainhuck/irisscaffold/internal/cache/redis"
 	"github.com/kainhuck/irisscaffold/internal/db"
 	"github.com/kainhuck/irisscaffold/internal/db/mysql"
 	"github.com/kainhuck/irisscaffold/internal/irisscaffold/greet/config"
@@ -9,8 +11,9 @@ import (
 )
 
 type Application struct {
-	cfg      *config.Config
-	dbClient db.Client
+	cfg         *config.Config
+	dbClient    db.Client
+	cacheClient cache.Client
 }
 
 func NewApplication(cfg *config.Config) *Application {
@@ -27,5 +30,11 @@ func NewApplication(cfg *config.Config) *Application {
 	return &Application{
 		cfg:      cfg,
 		dbClient: dbClient,
+		cacheClient: redis.NewClient(
+			cfg.Database.Redis.Host,
+			cfg.Database.Redis.Port,
+			cfg.Database.Redis.Password,
+			cfg.Database.Redis.DB,
+		),
 	}
 }
