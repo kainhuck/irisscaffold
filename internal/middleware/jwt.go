@@ -5,7 +5,6 @@ import (
 	"github.com/kainhuck/irisscaffold/internal/webmodel/response"
 	"github.com/kataras/iris/v12/context"
 	"github.com/kataras/iris/v12/middleware/jwt"
-	"net/http"
 )
 
 // Claims 自己修改字段，保证唯一即可
@@ -25,7 +24,7 @@ func JwtVerify(sigKey string) context.Handler {
 		}
 
 		ctx.StopExecution()
-		ctx.StatusCode(http.StatusOK)
+		ctx.StatusCode(errno.ErrUnauthorized.GetHttpCode())
 		_ = ctx.JSON(response.ApiResponse{
 			Code:      errno.ErrParameter.GetBusinessCode(),
 			Message:   errno.ErrParameter.GetMsg(),
